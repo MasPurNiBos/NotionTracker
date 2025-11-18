@@ -85,22 +85,22 @@ st.markdown("""
         font-size: 14px;
     }
     
-    /* --- BAGIAN PENTING: HIDE MENU TAPI SIDEBAR AMAN --- */
+    /* --- HIDE MENU TAPI PANAH SIDEBAR TETAP ADA --- */
     
     /* 1. Sembunyikan Titik Tiga (Hamburger Menu) */
     #MainMenu {visibility: hidden;}
     
-    /* 2. Sembunyikan Footer "Made with Streamlit" */
+    /* 2. Sembunyikan Footer */
     footer {visibility: hidden;}
     
-    /* 3. Sembunyikan Tombol Deploy & Toolbar Kanan Atas */
+    /* 3. Sembunyikan Tombol Deploy Saja (Toolbar JANGAN di-hide total) */
     .stAppDeployButton {display: none;}
-    [data-testid="stToolbar"] {visibility: hidden !important;}
     
-    /* 4. Sembunyikan Garis Pelangi Dekorasi di Header (Opsional) */
+    /* 4. Sembunyikan Garis Pelangi */
     [data-testid="stDecoration"] {display: none;}
-
-    /* JANGAN PAKE header {visibility: hidden;} LAGI YA! */
+    
+    /* 5. Pastikan Header Transparan tapi Ada */
+    [data-testid="stHeader"] {background-color: rgba(0,0,0,0);}
 
 </style>
 """, unsafe_allow_html=True)
