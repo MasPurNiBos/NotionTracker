@@ -187,10 +187,22 @@ open_s = total - closed
 crit = len(st.session_state.data_uat[st.session_state.data_uat["Severity"].isin(["High", "Critical"])])
 
 m1, m2, m3, m4 = st.columns(4)
-with m1: with st.container(border=True): st.metric("Total Issues", total)
-with m2: with st.container(border=True): st.metric("Pending", open_s)
-with m3: with st.container(border=True): st.metric("Resolved", closed)
-with m4: with st.container(border=True): st.metric("Critical / High", crit)
+
+with m1: 
+    with st.container(border=True): 
+        st.metric("Total Issues", total)
+
+with m2: 
+    with st.container(border=True): 
+        st.metric("Pending", open_s)
+
+with m3: 
+    with st.container(border=True): 
+        st.metric("Resolved", closed)
+
+with m4: 
+    with st.container(border=True): 
+        st.metric("Critical / High", crit)
 
 # ==========================================
 # 6. TABLE LOG
