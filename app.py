@@ -4,16 +4,17 @@ from datetime import datetime
 import io
 import time
 import os
-import base64 
+import base64
+import pytz # <--- Library Timezone
 
 # ==========================================
 # 1. CONFIG & CORPORATE DARK THEME
 # ==========================================
 st.set_page_config(
     page_title="Testing Issue Tracker",
-    page_icon="assets/LogoTab.svg", 
+    page_icon="assets/Logo.svg", # Pastikan ini sesuai nama file lo
     layout="wide",
-    initial_sidebar_state="collapsed" # Opsional: Biar sidebar default nutup biar rapi
+    initial_sidebar_state="collapsed"
 )
 
 # ==========================================
@@ -28,23 +29,29 @@ def get_base64_image(image_path):
         return ""
 
 # ==========================================
-# CSS STYLING (REVISI: ANTI-BROKEN ICON)
+# HELPER: GET CURRENT TIME (WIB / JAKARTA)
+# ==========================================
+def get_wib_time():
+    # Definisikan zona waktu Jakarta
+    tz = pytz.timezone('Asia/Jakarta')
+    # Ambil waktu sekarang sesuai zona waktu itu
+    return datetime.now(tz).strftime("%Y-%m-%d %H:%M")
+
+# ==========================================
+# CSS STYLING
 # ==========================================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    /* 1. Terapkan Font ke Body Utama */
     html, body, .stApp {
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* 2. Font untuk elemen spesifik */
     h1, h2, h3, h4, h5, h6, p, label, .stButton button, .stTextArea textarea, .stSelectbox div, .stMarkdown {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
 
-    /* Input Fields Background */
     .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
         background-color: #0E1117;
         color: white;
@@ -52,7 +59,6 @@ st.markdown("""
         border-radius: 6px;
     }
     
-    /* Buttons */
     .stButton button {
         background-color: #0F52BA;
         color: white;
@@ -66,7 +72,6 @@ st.markdown("""
         background-color: #0a3d8f;
     }
 
-    /* Card Containers */
     [data-testid="stVerticalBlock"] > [style*="flex-direction: column;"] > [data-testid="stVerticalBlock"] {
         background-color: #161B22;
         border: 1px solid #30363D;
@@ -74,7 +79,6 @@ st.markdown("""
         padding: 1.5rem;
     }
 
-    /* Empty State */
     .empty-state {
         text-align: center;
         padding: 40px;
@@ -85,21 +89,10 @@ st.markdown("""
         font-size: 14px;
     }
     
-    /* --- HIDE MENU TAPI PANAH SIDEBAR TETAP ADA --- */
-    
-    /* 1. Sembunyikan Titik Tiga (Hamburger Menu) */
     #MainMenu {visibility: hidden;}
-    
-    /* 2. Sembunyikan Footer */
     footer {visibility: hidden;}
-    
-    /* 3. Sembunyikan Tombol Deploy Saja (Toolbar JANGAN di-hide total) */
     .stAppDeployButton {display: none;}
-    
-    /* 4. Sembunyikan Garis Pelangi */
     [data-testid="stDecoration"] {display: none;}
-    
-    /* 5. Pastikan Header Transparan tapi Ada */
     [data-testid="stHeader"] {background-color: rgba(0,0,0,0);}
 
 </style>
@@ -149,12 +142,10 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-
 # ==========================================
 # 4. LOG NEW ISSUE
 # ==========================================
 with st.container(border=True):
-    # -- HEADER SECTION --
     icon_new_b64 = get_base64_image("assets/NewIssue.svg")
     st.markdown(f"""
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
@@ -163,7 +154,6 @@ with st.container(border=True):
     </div>
     """, unsafe_allow_html=True)
     
-    # -- INPUTS --
     input_desc = st.text_area("Issue Description", height=100, placeholder="Describe the technical issue clearly...")
     c1, c2, c3 = st.columns([3, 2, 1], gap="medium")
     
@@ -176,9 +166,12 @@ with st.container(border=True):
         btn_submit = st.button("Submit Issue", type="primary", use_container_width=True)
 
     if btn_submit and input_desc:
+        # PAKE FUNGSI JAM WIB DISINI
+        current_time_wib = get_wib_time()
+        
         new_row = {
             "Delete": False, "Status": False, 
-            "Time Found": datetime.now().strftime("%Y-%m-%d %H:%M"), 
+            "Time Found": current_time_wib, # <--- Jam WIB
             "Issue Description": input_desc, "Category": category, "Severity": severity, "Time Resolved": "" 
         }
         st.session_state.data_uat = pd.concat([st.session_state.data_uat, pd.DataFrame([new_row])], ignore_index=True)
@@ -194,21 +187,16 @@ open_s = total - closed
 crit = len(st.session_state.data_uat[st.session_state.data_uat["Severity"].isin(["High", "Critical"])])
 
 m1, m2, m3, m4 = st.columns(4)
-with m1: 
-    with st.container(border=True): st.metric("Total Issues", total)
-with m2: 
-    with st.container(border=True): st.metric("Pending", open_s)
-with m3: 
-    with st.container(border=True): st.metric("Resolved", closed)
-with m4: 
-    with st.container(border=True): st.metric("Critical / High", crit)
+with m1: with st.container(border=True): st.metric("Total Issues", total)
+with m2: with st.container(border=True): st.metric("Pending", open_s)
+with m3: with st.container(border=True): st.metric("Resolved", closed)
+with m4: with st.container(border=True): st.metric("Critical / High", crit)
 
 # ==========================================
 # 6. TABLE LOG
 # ==========================================
 st.write("")
 with st.container(border=True):
-    # -- HEADER SECTION --
     icon_list_b64 = get_base64_image("assets/ListTable.svg")
     st.markdown(f"""
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
@@ -235,12 +223,17 @@ with st.container(border=True):
             },
             num_rows="fixed"
         )
-        # Logic update status
+        
+        # LOGIC UPDATE (JAM WIB JUGA)
         if not edited_df.equals(st.session_state.data_uat):
             df_active = edited_df[edited_df["Delete"] == False].copy()
             for idx, row in df_active.iterrows():
-                if row["Status"] and not row["Time Resolved"]: df_active.at[idx, "Time Resolved"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-                elif not row["Status"] and row["Time Resolved"]: df_active.at[idx, "Time Resolved"] = ""
+                # Kalau baru dicentang DONE
+                if row["Status"] and not row["Time Resolved"]: 
+                    df_active.at[idx, "Time Resolved"] = get_wib_time() # <--- Pakai Jam WIB
+                # Kalau di-uncheck
+                elif not row["Status"] and row["Time Resolved"]: 
+                    df_active.at[idx, "Time Resolved"] = ""
             st.session_state.data_uat = df_active
             st.rerun()
 
@@ -251,7 +244,6 @@ st.write("")
 with st.container(border=True):
     c_ex1, c_ex2 = st.columns([4, 1])
     with c_ex1:
-        # -- EXPORT HEADER --
         icon_dl_b64 = get_base64_image("assets/Download.svg")
         st.markdown(f"""
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -272,4 +264,4 @@ with st.container(border=True):
                 exp_df["Status"] = exp_df["Status"].apply(lambda x: "Closed" if x else "Open")
                 exp_df.to_excel(writer, index=False, sheet_name='Logs')
                 writer.sheets['Logs'].set_column('A:G', 20)
-            st.download_button("Download Excel", data=buf.getvalue(), file_name=f"UAT_Log_{datetime.now().strftime('%Y%m%d')}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
+            st.download_button("Download Excel", data=buf.getvalue(), file_name=f"UAT_Log_{get_wib_time().replace(':','-').replace(' ', '_')}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
