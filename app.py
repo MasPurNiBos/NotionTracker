@@ -34,12 +34,12 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    /* 1. Terapkan Font ke Body Utama (Inherit) */
+    /* 1. Terapkan Font ke Body Utama */
     html, body, .stApp {
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* 2. Paksa Font cuma di Elemen Teks Beneran (Bukan Icon) */
+    /* 2. Font untuk elemen spesifik */
     h1, h2, h3, h4, h5, h6, p, label, .stButton button, .stTextArea textarea, .stSelectbox div, .stMarkdown {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
@@ -85,19 +85,23 @@ st.markdown("""
         font-size: 14px;
     }
     
-    /* Sembunyikan Menu Hamburger (Titik Tiga di pojok kanan atas) */
+    /* --- BAGIAN PENTING: HIDE MENU TAPI SIDEBAR AMAN --- */
+    
+    /* 1. Sembunyikan Titik Tiga (Hamburger Menu) */
     #MainMenu {visibility: hidden;}
     
-    /* Sembunyikan Footer "Made with Streamlit" */
+    /* 2. Sembunyikan Footer "Made with Streamlit" */
     footer {visibility: hidden;}
     
-    /* Sembunyikan Header Dekorasi Streamlit (Garis warna-warni) */
-    header {visibility: hidden;}
-    
-    /* Sembunyikan Tombol Deploy & Toolbar (PENTING!) */
+    /* 3. Sembunyikan Tombol Deploy & Toolbar Kanan Atas */
     .stAppDeployButton {display: none;}
-    [data-testid="stToolbar"] {display: none;}
-    [data-testid="stHeader"] {background-color: rgba(0,0,0,0);} /* Transparan */
+    [data-testid="stToolbar"] {visibility: hidden !important;}
+    
+    /* 4. Sembunyikan Garis Pelangi Dekorasi di Header (Opsional) */
+    [data-testid="stDecoration"] {display: none;}
+
+    /* JANGAN PAKE header {visibility: hidden;} LAGI YA! */
+
 </style>
 """, unsafe_allow_html=True)
 
