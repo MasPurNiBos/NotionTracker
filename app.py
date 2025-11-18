@@ -254,8 +254,8 @@ with st.container(border=True):
         <div style="display: flex; align-items: center; gap: 10px;">
             <img src="data:image/svg+xml;base64,{icon_dl_b64}" width="24" style="opacity: 0.9;">
             <div>
-                <div style="font-weight: 700; color: #E6E6E6; font-size: 16px;">Export Data</div>
-                <div style="font-size: 12px; color: #8b949e;">Download report (.xlsx) to resume later.</div>
+                <div style="font-weight: 700; color: #0f52ba; font-size: 16px;">Export Data</div>
+                <div style="font-size: 12px; color: #0a3d8f;">Download report (.xlsx) to resume later.</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
