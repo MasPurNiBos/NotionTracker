@@ -85,8 +85,19 @@ st.markdown("""
         font-size: 14px;
     }
     
+    /* Sembunyikan Menu Hamburger (Titik Tiga di pojok kanan atas) */
     #MainMenu {visibility: hidden;}
+    
+    /* Sembunyikan Footer "Made with Streamlit" */
     footer {visibility: hidden;}
+    
+    /* Sembunyikan Header Dekorasi Streamlit (Garis warna-warni) */
+    header {visibility: hidden;}
+    
+    /* Sembunyikan Tombol Deploy & Toolbar (PENTING!) */
+    .stAppDeployButton {display: none;}
+    [data-testid="stToolbar"] {display: none;}
+    [data-testid="stHeader"] {background-color: rgba(0,0,0,0);} /* Transparan */
 </style>
 """, unsafe_allow_html=True)
 
