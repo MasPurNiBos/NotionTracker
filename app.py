@@ -5,14 +5,14 @@ import io
 import time
 import os
 import base64
-import pytz 
+import pytz # <--- Library Timezone
 
 # ==========================================
 # 1. CONFIG & CORPORATE DARK THEME
 # ==========================================
 st.set_page_config(
     page_title="Testing Issue Tracker",
-    page_icon="assets/Logo.svg", 
+    page_icon="assets/Logo.svg", # Pastikan ini sesuai nama file lo
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -32,7 +32,9 @@ def get_base64_image(image_path):
 # HELPER: GET CURRENT TIME (WIB / JAKARTA)
 # ==========================================
 def get_wib_time():
+    # Definisikan zona waktu Jakarta
     tz = pytz.timezone('Asia/Jakarta')
+    # Ambil waktu sekarang sesuai zona waktu itu
     return datetime.now(tz).strftime("%Y-%m-%d %H:%M")
 
 # ==========================================
@@ -164,17 +166,19 @@ with st.container(border=True):
         btn_submit = st.button("Submit Issue", type="primary", use_container_width=True)
 
     if btn_submit and input_desc:
+        # PAKE FUNGSI JAM WIB DISINI
         current_time_wib = get_wib_time()
+        
         new_row = {
             "Delete": False, "Status": False, 
-            "Time Found": current_time_wib, 
+            "Time Found": current_time_wib, # <--- Jam WIB
             "Issue Description": input_desc, "Category": category, "Severity": severity, "Time Resolved": "" 
         }
         st.session_state.data_uat = pd.concat([st.session_state.data_uat, pd.DataFrame([new_row])], ignore_index=True)
         st.rerun()
 
 # ==========================================
-# 5. METRICS (FIXED SYNTAX)
+# 5. METRICS
 # ==========================================
 st.write("")
 total = len(st.session_state.data_uat)
@@ -232,11 +236,14 @@ with st.container(border=True):
             num_rows="fixed"
         )
         
+        # LOGIC UPDATE (JAM WIB JUGA)
         if not edited_df.equals(st.session_state.data_uat):
             df_active = edited_df[edited_df["Delete"] == False].copy()
             for idx, row in df_active.iterrows():
+                # Kalau baru dicentang DONE
                 if row["Status"] and not row["Time Resolved"]: 
-                    df_active.at[idx, "Time Resolved"] = get_wib_time()
+                    df_active.at[idx, "Time Resolved"] = get_wib_time() # <--- Pakai Jam WIB
+                # Kalau di-uncheck
                 elif not row["Status"] and row["Time Resolved"]: 
                     df_active.at[idx, "Time Resolved"] = ""
             st.session_state.data_uat = df_active
@@ -254,8 +261,8 @@ with st.container(border=True):
         <div style="display: flex; align-items: center; gap: 10px;">
             <img src="data:image/svg+xml;base64,{icon_dl_b64}" width="24" style="opacity: 0.9;">
             <div>
-                <div style="font-weight: 700; color: #0f52ba; font-size: 16px;">Export Data</div>
-                <div style="font-size: 12px; color: #0a3d8f;">Download report (.xlsx) to resume later.</div>
+                <div style="font-weight: 700; color: #E6E6E6; font-size: 16px;">Export Data</div>
+                <div style="font-size: 12px; color: #8b949e;">Download report (.xlsx) to resume later.</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
