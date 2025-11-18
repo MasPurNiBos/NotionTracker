@@ -12,7 +12,7 @@ import pytz # <--- Library Timezone
 # ==========================================
 st.set_page_config(
     page_title="Testing Issue Tracker",
-    page_icon="assets/Logo.svg", # Pastikan ini sesuai nama file lo
+    page_icon="assets/LogoTab.svg", # Pastikan ini sesuai nama file lo
     layout="wide",
     initial_sidebar_state="collapsed"
 )
